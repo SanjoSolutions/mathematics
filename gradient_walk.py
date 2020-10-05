@@ -18,4 +18,5 @@ def gradient_walk(first_derivative, update_x, alpha=0.5, epsilon=0.01, initial_v
         print('step ' + str(step) + ':')
         print('  slope', slope)
         print('  x', x)
+
     return x
