@@ -1,6 +1,6 @@
 # variables: tuple of dictionaries with items:
-#   first_derivative, update, alpha, epsilon, initial_value
-def gradient_walk(variables, max_steps=None, after_step=None):
+#   update, alpha, epsilon, initial_value
+def gradient_walk(variables, calculate_slopes, max_steps=None, after_step=None):
     variables = tuple(variable.copy() for variable in variables)
 
     # Set defaults
@@ -16,8 +16,9 @@ def gradient_walk(variables, max_steps=None, after_step=None):
     for variable in variables:
         variable['value'] = variable['initial_value']
 
-    for variable in variables:
-        variable['slope'] = variable['first_derivative'](variables)
+    slopes = calculate_slopes(variables)
+    for index in range(len(variables)):
+        variables[index]['slope'] = slopes[index]
 
     step = 1
     if after_step is not None:
@@ -26,7 +27,11 @@ def gradient_walk(variables, max_steps=None, after_step=None):
     while (max_steps is None or step < max_steps) and are_any_variable_slopes_above_epsilon(variables):
         for variable in variables:
             variable['value'] = variable['update'](variable['value'], variable['alpha'], variable['slope'])
-            variable['slope'] = variable['first_derivative'](variables)
+
+        slopes = calculate_slopes(variables)
+        for index in range(len(variables)):
+            variables[index]['slope'] = slopes[index]
+
         step += 1
         if after_step is not None:
             after_step(tuple(variable.copy() for variable in variables))

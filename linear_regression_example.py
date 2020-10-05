@@ -10,10 +10,10 @@ points = (
 
 result = linear_regression(points)
 print('result', result)
-m = result[0]['value']
-b = result[1]['value']
-print('slope result', m)
+b = result[0]['value']
+m = result[1]['value']
 print('b result', b)
+print('m result', m)
 
 assert abs(m - 0) < 0.01
 assert abs(b - 2) < 0.01
