@@ -15,5 +15,5 @@ b = result[1]['value']
 print('slope result', m)
 print('b result', b)
 
-assert m == 0
-assert b == 2
+assert abs(m - 0) < 0.01
+assert abs(b - 2) < 0.01
