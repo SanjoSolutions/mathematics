@@ -15,8 +15,9 @@ from gradient_descent import gradient_descent
 def linear_regression(points):
     return gradient_descent(
         lambda slope: calculate_first_derivative_total_distance(slope, points),
-        alpha=0.000003,
+        alpha=0.00001,
         initial_value=1,
+        max_steps=132857,
         after_step=lambda slope: print('total distance', calculate_total_distance(slope, points))
     )
 
