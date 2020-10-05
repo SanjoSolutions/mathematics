@@ -1,22 +1,38 @@
-from no_op import no_op
+# variables: tuple of dictionaries with items:
+#   first_derivative, update, alpha, epsilon, initial_value
+def gradient_walk(variables, max_steps=None, after_step=None):
+    variables = tuple(variable.copy() for variable in variables)
 
+    # Set defaults
+    for variable in variables:
+        if 'alpha' not in variable:
+            variable['alpha'] = 0.5
+        if 'epsilon' not in variable:
+            variable['epsilon'] = 0.01
+        if 'initial_value' not in variable:
+            variable['initial_value'] = 0
 
-def gradient_walk(first_derivative, update_x, alpha=0.5, epsilon=0.01, initial_value=0, max_steps=None, after_step=no_op):
-    x = initial_value
-    slope = first_derivative(x)
+    # Initialize values
+    for variable in variables:
+        variable['value'] = variable['initial_value']
+
+    for variable in variables:
+        variable['slope'] = variable['first_derivative'](variables)
+
     step = 1
-    after_step(x)
-    print('step ' + str(step) + ':')
-    print('  slope', slope)
-    print('  x', x)
+    if after_step is not None:
+        after_step(tuple(variable.copy() for variable in variables))
 
-    while (max_steps is None or step < max_steps) and abs(slope) > epsilon:
-        x = update_x(x, alpha, slope)
-        slope = first_derivative(x)
+    while (max_steps is None or step < max_steps) and are_any_variable_slopes_above_epsilon(variables):
+        for variable in variables:
+            variable['value'] = variable['update'](variable['value'], variable['alpha'], variable['slope'])
+            variable['slope'] = variable['first_derivative'](variables)
         step += 1
-        after_step(x)
-        print('step ' + str(step) + ':')
-        print('  slope', slope)
-        print('  x', x)
+        if after_step is not None:
+            after_step(tuple(variable.copy() for variable in variables))
 
-    return x
+    return variables
+
+
+def are_any_variable_slopes_above_epsilon(variables):
+    return any(abs(variable['slope']) > variable['epsilon'] for variable in variables)

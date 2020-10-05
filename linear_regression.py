@@ -13,16 +13,22 @@ from gradient_descent import gradient_descent
 
 
 def linear_regression(points):
+    variables = (
+        {
+            'first_derivative': lambda variables: calculate_first_derivative_total_distance(variables, points),
+            'alpha': 0.00001,
+            'initial_value': 1,
+        },
+    )
     return gradient_descent(
-        lambda slope: calculate_first_derivative_total_distance(slope, points),
-        alpha=0.00001,
-        initial_value=1,
+        variables,
         max_steps=132857,
-        after_step=lambda slope: print('total distance', calculate_total_distance(slope, points))
+        after_step=lambda variables: print('total distance', calculate_total_distance(variables, points))
     )
 
 
-def calculate_total_distance(slope, points):
+def calculate_total_distance(variables, points):
+    slope = variables[0]['value']
     total_distance = 0
     for point in points:
         total_distance += calculate_distance(slope, point)
@@ -76,7 +82,8 @@ def calculate_first_derivative_distance(slope, point):
         return numerator / denominator
 
 
-def calculate_first_derivative_total_distance(slope, points):
+def calculate_first_derivative_total_distance(variables, points):
+    slope = variables[0]['value']
     first_derivative_total_distance = 0
     for point in points:
         first_derivative_distance = calculate_first_derivative_distance(slope, point)

@@ -1,10 +1,8 @@
-from gradient_walk import gradient_walk
-from no_op import no_op
+from create_gradient_walk_variant import create_gradient_walk_variant
 
 
-def gradient_descent(first_derivative, alpha=0.5, epsilon=0.01, initial_value=0, max_steps=None, after_step=no_op):
-    return gradient_walk(first_derivative, update_x, alpha, epsilon, initial_value, max_steps, after_step)
-
-
-def update_x(x, alpha, slope):
+def update(x, alpha, slope):
     return x - alpha * slope
+
+
+gradient_descent = create_gradient_walk_variant(update)
